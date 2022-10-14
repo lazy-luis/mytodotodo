@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 const {width} = Dimensions.get('window');
@@ -20,6 +20,8 @@ const App = () => {
   const [todos, setTodos] = useState([]);
   const [edit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
+
+  const inputRef = useRef(null);
 
   const createNewTodo = () => {
     if (text === '') {
@@ -34,6 +36,7 @@ const App = () => {
 
     setTodos([newTodo, ...todos]);
     setText('');
+    Keyboard.dismiss();
   };
 
   const editTodo = id => {
@@ -41,6 +44,7 @@ const App = () => {
     setEditId(id);
     const todo = todos.find(todo => todo.id === id);
     setText(todo.text);
+    inputRef.current.focus();
   };
 
   const saveEdit = () => {
@@ -55,6 +59,7 @@ const App = () => {
     setEdit(false);
     setEditId(null);
     setText('');
+    Keyboard.dismiss();
   };
 
   const deleteTodo = id => {
@@ -86,6 +91,7 @@ const App = () => {
               borderBottomLeftRadius: 8,
               paddingHorizontal: 12,
             }}
+            ref={inputRef}
             value={text}
             onChangeText={setText}
           />
