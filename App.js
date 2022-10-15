@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 const {width} = Dimensions.get('window');
@@ -22,6 +22,23 @@ const App = () => {
   const [editId, setEditId] = useState(null);
 
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/todos?_limit=6').then(res =>
+      res.json().then(data =>
+        data.map(item =>
+          setTodos(prev => [
+            ...prev,
+            {
+              id: item.id,
+              text: item.title,
+              completed: item.completed,
+            },
+          ]),
+        ),
+      ),
+    );
+  }, []);
 
   const createNewTodo = () => {
     if (text === '') {
@@ -132,10 +149,12 @@ const App = () => {
                   fontSize: 16,
                   fontWeight: '400',
                   textDecorationLine: todo.completed ? 'line-through' : 'none',
+                  flex: 0.7,
+                  whiteSpace: 'wrap',
                 }}>
                 {todo.text}
               </Text>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row', flex: 0.3}}>
                 <TouchableOpacity
                   style={{
                     padding: 12,
